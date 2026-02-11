@@ -86,7 +86,7 @@ html, body {
 
 ```css
 /* mobile-adapt: auto-generated - responsive width override */
-@media (max-width: 768px) {
+@media (max-width: 839px) {
   .fixed-width-element {
     width: 100%;
     max-width: 100vw;
@@ -110,7 +110,7 @@ These issues significantly degrade mobile usability.
 
 ```css
 /* mobile-adapt: auto-generated */
-@media (max-width: 768px) {
+@media (max-width: 839px) {
   a, button, [role="button"] {
     min-height: 44px;
     min-width: 44px;
@@ -130,7 +130,7 @@ These issues significantly degrade mobile usability.
 
 ```css
 /* mobile-adapt: auto-generated */
-@media (max-width: 768px) {
+@media (max-width: 839px) {
   p a, li a, span a, td a {
     padding: 8px 4px;
     margin: -8px -4px;
@@ -172,7 +172,7 @@ Add `loading="lazy"` to `<img>` tags that are not in the first viewport (skip th
 
 ```css
 /* mobile-adapt: auto-generated */
-@media (max-width: 768px) {
+@media (max-width: 839px) {
   [style*="width"], .container, .wrapper, main, section, article {
     max-width: 100%;
     padding-left: 16px;
@@ -201,7 +201,7 @@ Add `loading="lazy"` to `<img>` tags that are not in the first viewport (skip th
 
 ```css
 /* mobile-adapt: auto-generated */
-@media (max-width: 768px) {
+@media (max-width: 839px) {
   body {
     font-size: 16px;
     line-height: 1.5;
@@ -215,43 +215,143 @@ Add `loading="lazy"` to `<img>` tags that are not in the first viewport (skip th
 
 ---
 
-### H5: Navigation Adaptation
+### H5: Navigation Adaptation — Hamburger Menu
 
-**Check**: Horizontal navigation menus adapt for narrow screens.
+**Check**: Navigation menus adapt for Compact screens (< 600px) using a hamburger toggle pattern.
 
 **Detection**:
 1. Search for `<nav>` elements or common nav patterns (`.nav`, `.navbar`, `.menu`, `#navigation`).
 2. Check if nav uses `display: flex` or `display: inline-block` horizontally without a `@media` override.
-3. Check Playwright snapshot at 375px for overflowing nav items.
+3. Check if a hamburger toggle already exists (look for `.hamburger`, `.menu-toggle`, `#menu-btn`, checkbox-based toggle).
+4. Check Playwright snapshot at 375px for overflowing nav items.
 
-**Fix**: Add responsive navigation:
+**Fix**: Inject a CSS-only hamburger menu using the checkbox hack.
+
+**Step 1 — Add hamburger toggle HTML** inside the `<nav>` (or its parent `<header>`), BEFORE the nav links:
+
+```html
+<!-- mobile-adapt: auto-generated hamburger toggle -->
+<input type="checkbox" id="mobile-adapt-menu-toggle" class="mobile-adapt-menu-toggle" aria-hidden="true">
+<label for="mobile-adapt-menu-toggle" class="mobile-adapt-hamburger" aria-label="Toggle navigation menu">
+  <span class="mobile-adapt-hamburger-line"></span>
+</label>
+```
+
+**Step 2 — Add CSS** for the hamburger behavior:
 
 ```css
-/* mobile-adapt: auto-generated */
-@media (max-width: 768px) {
-  nav, .nav, .navbar, .menu, [role="navigation"] {
-    flex-direction: column;
-    align-items: stretch;
+/* mobile-adapt: auto-generated — hamburger menu */
+
+/* Hide hamburger toggle checkbox */
+.mobile-adapt-menu-toggle {
+  display: none;
+}
+
+/* Hide hamburger icon on larger screens */
+.mobile-adapt-hamburger {
+  display: none;
+}
+
+@media (max-width: 599px) {
+  /* Show hamburger icon */
+  .mobile-adapt-hamburger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    position: relative;
+    z-index: 100;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  nav ul, .nav ul, .menu ul {
+  /* Hamburger icon lines */
+  .mobile-adapt-hamburger-line {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: currentColor;
+    position: relative;
+    transition: background 0.3s;
+  }
+
+  .mobile-adapt-hamburger-line::before,
+  .mobile-adapt-hamburger-line::after {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: currentColor;
+    position: absolute;
+    transition: transform 0.3s;
+  }
+
+  .mobile-adapt-hamburger-line::before {
+    top: -7px;
+  }
+
+  .mobile-adapt-hamburger-line::after {
+    top: 7px;
+  }
+
+  /* Animate to X when open */
+  .mobile-adapt-menu-toggle:checked + .mobile-adapt-hamburger .mobile-adapt-hamburger-line {
+    background: transparent;
+  }
+
+  .mobile-adapt-menu-toggle:checked + .mobile-adapt-hamburger .mobile-adapt-hamburger-line::before {
+    transform: rotate(45deg);
+    top: 0;
+  }
+
+  .mobile-adapt-menu-toggle:checked + .mobile-adapt-hamburger .mobile-adapt-hamburger-line::after {
+    transform: rotate(-45deg);
+    top: 0;
+  }
+
+  /* Hide nav links by default on compact screens */
+  nav, .nav, .navbar, .menu, [role="navigation"] {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    width: 100%;
+  }
+
+  /* Show nav links when hamburger is checked */
+  .mobile-adapt-menu-toggle:checked ~ nav,
+  .mobile-adapt-menu-toggle:checked ~ .nav,
+  .mobile-adapt-menu-toggle:checked ~ .navbar,
+  .mobile-adapt-menu-toggle:checked ~ .menu,
+  .mobile-adapt-menu-toggle:checked ~ [role="navigation"],
+  .mobile-adapt-menu-toggle:checked ~ * nav,
+  .mobile-adapt-menu-toggle:checked ~ * .nav {
+    max-height: 500px;
+  }
+
+  /* Stack nav items vertically */
+  nav ul, nav ol, .nav, .menu ul {
     flex-direction: column;
     padding: 0;
-  }
-
-  nav li, .nav li, .menu li {
-    width: 100%;
+    margin: 0;
+    list-style: none;
   }
 
   nav a, .nav a, .menu a {
     display: block;
     padding: 12px 16px;
     min-height: 44px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
   }
 }
 ```
 
-**Note**: If navigation has many items, suggest hamburger menu as a manual follow-up.
+**HTML injection rules**:
+- Place the checkbox + label as the FIRST children inside the nav's parent container (e.g., `<header>`).
+- The checkbox MUST be a sibling of (or ancestor-adjacent to) the `<nav>` element for the `~` selector to work.
+- If the nav structure makes sibling targeting impossible, wrap the toggle + nav in a new `<div>` container.
+
+**Note**: On Medium screens (600-839px), nav links remain visible in their original horizontal layout. The hamburger only appears on Compact (< 600px).
 
 ---
 
@@ -279,7 +379,7 @@ These improve the experience but are not critical.
 
 ```css
 /* mobile-adapt: auto-generated */
-@media (max-width: 768px) {
+@media (max-width: 839px) {
   h1 { font-size: clamp(1.5rem, 5vw, 2.5rem); }
   h2 { font-size: clamp(1.25rem, 4vw, 2rem); }
   h3 { font-size: clamp(1.1rem, 3.5vw, 1.5rem); }
@@ -356,7 +456,7 @@ Also add to viewport meta: `viewport-fit=cover`:
 
 ```css
 /* mobile-adapt: auto-generated */
-@media (max-width: 768px) {
+@media (max-width: 839px) {
   [style*="overflow"], .scroll-container, .carousel, .slider {
     -webkit-overflow-scrolling: touch;
     scroll-snap-type: x mandatory;
@@ -494,7 +594,7 @@ Report these but only auto-fix L4.
 
 ```css
 /* mobile-adapt: auto-generated */
-@media (min-width: 769px) {
+@media (min-width: 840px) {
   article, .content, main > p, main > div {
     max-width: 65ch;
   }

@@ -1,0 +1,466 @@
+<html lang="en" vid="0"><head vid="1">
+    <meta charset="UTF-8" vid="2">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" vid="3">
+    <title vid="4">LaunchPad | Marketing Landing Page</title>
+    <style vid="5">
+        
+
+        :root {
+            --bg-base: #d6d8db; 
+            --ink-main: #111111;
+            --accent-blur: #ff1053; 
+            --accent-secondary: #e6e6e6;
+            --font-stack: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            --spacing-unit: 1.5rem;
+            --border-width: 1px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--ink-main);
+            font-family: var(--font-stack);
+            font-weight: 400;
+            overflow-x: hidden;
+            width: 100vw;
+            min-height: 100vh;
+            line-height: 1.1;
+        }
+
+        
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.08;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        
+        .atmospheric-haze {
+            position: fixed;
+            top: -20vh;
+            right: -10vw;
+            width: 80vw;
+            height: 80vh;
+            background: radial-gradient(circle, var(--accent-blur) 0%, rgba(255,255,255,0) 70%);
+            filter: blur(80px);
+            opacity: 0.8;
+            z-index: 0;
+            animation: drift 20s infinite alternate ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes drift {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-50px, 50px) scale(1.1); }
+        }
+
+        
+        h1, h2, h3, h4, .label {
+            text-transform: uppercase;
+            letter-spacing: -0.03em;
+            font-weight: 400; 
+        }
+
+        .hero-text {
+            font-size: clamp(3rem, 8vw, 10rem);
+            line-height: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            font-size: 1.5rem;
+            border-bottom: 1px solid var(--ink-main);
+            padding-bottom: 0.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .meta-data {
+            font-family: 'Courier New', Courier, monospace; 
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: var(--spacing-unit);
+            padding: var(--spacing-unit);
+            position: relative;
+            z-index: 10;
+        }
+
+        
+        .nav-fixed {
+            position: fixed;
+            top: var(--spacing-unit);
+            left: var(--spacing-unit);
+            right: var(--spacing-unit);
+            bottom: var(--spacing-unit);
+            pointer-events: none;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .nav-top, .nav-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            pointer-events: auto;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--ink-main);
+            text-transform: uppercase;
+            font-size: 1rem;
+            position: relative;
+            margin-left: 2rem;
+        }
+
+        .nav-link::before {
+            content: '—';
+            position: absolute;
+            left: -1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover::before {
+            transform: translateX(5px);
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 500;
+            letter-spacing: -0.04em;
+        }
+
+        
+        section {
+            grid-column: 1 / -1;
+            margin-bottom: 15vh;
+            position: relative;
+        }
+
+        .hero-section {
+            height: 90vh;
+            display: flex;
+            align-items: center;
+            
+            padding-left: 0; 
+        }
+
+        
+        .vertical-indicator {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            position: absolute;
+            left: -2rem;
+            top: 0;
+            font-size: 0.8rem;
+            opacity: 0.6;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        
+        .service-list {
+            grid-column: 4 / -1;
+        }
+
+        .service-item {
+            border-top: 1px solid var(--ink-main);
+            padding: 2rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            transition: background 0.3s ease;
+            cursor: pointer;
+        }
+
+        .service-item:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        .service-item:last-child {
+            border-bottom: 1px solid var(--ink-main);
+        }
+
+        .service-name {
+            font-size: clamp(2rem, 4vw, 4rem);
+            text-transform: uppercase;
+        }
+
+        .service-desc {
+            width: 30%;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        
+        .stat-block {
+            grid-column: span 4;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            border-left: 1px solid var(--ink-main);
+            padding-left: 1rem;
+            height: 300px;
+        }
+
+        .stat-number {
+            font-size: 8rem;
+            line-height: 0.8;
+            letter-spacing: -0.05em;
+        }
+
+        .stat-label {
+            margin-top: 1rem;
+            font-size: 1rem;
+            text-transform: uppercase;
+        }
+
+        
+        .contact-form {
+            grid-column: 6 / 12;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 3rem;
+        }
+
+        input, textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--ink-main);
+            padding: 1rem 0;
+            font-family: var(--font-stack);
+            font-size: 1.5rem;
+            color: var(--ink-main);
+            outline: none;
+            border-radius: 0;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: rgba(17, 17, 17, 0.4);
+            text-transform: uppercase;
+        }
+
+        input:focus, textarea:focus {
+            border-bottom: 2px solid var(--accent-blur);
+        }
+
+        
+        
+        .btn-submit {
+            background: transparent;
+            border: 1px solid var(--ink-main);
+            color: var(--ink-main);
+            padding: 1rem 3rem;
+            font-size: 1rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            align-self: flex-start;
+            margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit:hover {
+            background: var(--ink-main);
+            color: var(--bg-base);
+        }
+
+        
+        .reveal-text {
+            animation: slideUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes slideUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+            
+            .service-list {
+                grid-column: 1 / -1;
+            }
+            
+            .stat-block {
+                grid-column: 1 / -1;
+                border-left: none;
+                border-top: 1px solid var(--ink-main);
+                padding-top: 1rem;
+                height: auto;
+                margin-bottom: 2rem;
+            }
+            
+            .contact-form {
+                grid-column: 1 / -1;
+            }
+
+            .atmospheric-haze {
+                opacity: 0.6;
+            }
+
+            .hero-text {
+                font-size: 4rem;
+            }
+        }
+    </style>
+</head>
+<body vid="6">
+
+    <div class="noise-overlay" vid="7"></div>
+    <div class="atmospheric-haze" vid="8"></div>
+
+    
+    <nav class="nav-fixed" vid="9">
+        <div class="nav-top" vid="10">
+            <div class="brand" vid="11">LaunchPad —<br vid="12">BUILDER</div>
+            <div class="nav-links" vid="13">
+                <a href="#" class="nav-link" vid="14">Templates</a>
+                <a href="#" class="nav-link" vid="15">Features</a>
+                <a href="#" class="nav-link" vid="16">Start Building</a>
+            </div>
+        </div>
+        <div class="nav-bottom" vid="17">
+            <div class="meta-data" vid="18">
+                SINCE 2024<br vid="19">
+                100% CLOUD — REMOTE
+            </div>
+            <div class="meta-data" style="text-align: right;" vid="20">
+                SCROLL<br vid="21">
+                ↓
+            </div>
+        </div>
+    </nav>
+
+    <main class="grid-container" vid="22">
+        
+        
+        <section class="hero-section" vid="23">
+            <div style="grid-column: 2 / 12;" vid="24">
+                <div class="meta-data" style="margin-bottom: 1rem;" vid="25">MARKETING PAGE BUILDER</div>
+                <h1 class="hero-text reveal-text" style="animation-delay: 0.2s;" vid="26">
+                    Build<br vid="27">
+                    Launch<br vid="28">
+                    Convert
+                </h1>
+                <div class="reveal-text" style="animation-delay: 0.4s; max-width: 400px; margin-top: 2rem; border-left: 1px solid black; padding-left: 1rem;" vid="29">
+                    Create high-converting landing pages. Turn visitors into customers with our drag-and-drop builder and proven templates.
+                </div>
+            </div>
+        </section>
+
+        
+        <section style="display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--spacing-unit);" vid="30">
+            <div class="stat-block" vid="31">
+                <div class="stat-number" vid="32">50+</div>
+                <div class="stat-label" vid="33">Ready-Made Templates</div>
+            </div>
+            <div class="stat-block" vid="34">
+                <div class="stat-number" vid="35">3x</div>
+                <div class="stat-label" vid="36">Avg. Conversion Uplift</div>
+            </div>
+            <div class="stat-block" vid="37">
+                <div class="stat-number" vid="38">98</div>
+                <div class="stat-label" vid="39">Percent Uptime</div>
+            </div>
+        </section>
+
+        
+        <section vid="40">
+            <div class="section-header" style="grid-column: 4 / -1;" vid="41">
+                <span vid="42">Features</span>
+                <span vid="43">(03)</span>
+            </div>
+            <div class="service-list" vid="44">
+                <div class="service-item" vid="45">
+                    <span class="service-name" vid="46">Page Builder</span>
+                    <span class="service-desc" vid="47">Drag-and-drop editor with pixel-perfect control for stunning landing pages.</span>
+                </div>
+                <div class="service-item" vid="48">
+                    <span class="service-name" vid="49">A/B Testing</span>
+                    <span class="service-desc" vid="50">Split-test headlines, layouts, and CTAs to maximize every visitor interaction.</span>
+                </div>
+                <div class="service-item" vid="51">
+                    <span class="service-name" vid="52">Analytics</span>
+                    <span class="service-desc" vid="53">Real-time conversion tracking and heatmaps to understand user behavior.</span>
+                </div>
+                <div class="service-item" vid="54">
+                    <span class="service-name" vid="55">Integrations</span>
+                    <span class="service-desc" vid="56">Connect your CRM, email platform, and payment gateway in a single click.</span>
+                </div>
+            </div>
+        </section>
+
+        
+        <section style="margin-bottom: 5rem;" vid="57">
+            <div class="section-header" style="grid-column: 4 / -1;" vid="58">
+                <span vid="59">Get Started</span>
+                <span vid="60">(GET STARTED)</span>
+            </div>
+            
+            <div style="grid-column: 2 / 5;" vid="61">
+                <h2 style="font-size: 3rem; line-height: 1;" vid="62">Let's<br vid="63">Build<br vid="64">Your Page.</h2>
+                <div class="meta-data" style="margin-top: 2rem;" vid="65">
+                    SUPPORT@LAUNCHPAD.IO<br vid="66">
+                    LAUNCHPAD.IO/HELP
+                </div>
+            </div>
+
+            <form class="contact-form" vid="67">
+                <div class="input-group" vid="68">
+                    <input type="text" placeholder="Your Name" vid="69">
+                </div>
+                <div class="input-group" vid="70">
+                    <input type="email" placeholder="Email Address" vid="71">
+                </div>
+                <div class="input-group" vid="72">
+                    <input type="text" placeholder="Enter your email to get started" vid="73">
+                </div>
+                <button type="submit" class="btn-submit" vid="74">Start Building</button>
+            </form>
+        </section>
+
+    </main>
+
+    
+    <div style="position: fixed; left: 1rem; top: 50%; transform: translateY(-50%); writing-mode: vertical-rl; text-orientation: mixed; font-size: 0.7rem; letter-spacing: 0.2em; opacity: 0.5; z-index: 50;" vid="75">
+        LAUNCHPAD STATUS: LIVE — 2026
+    </div>
+
+
+</body></html>

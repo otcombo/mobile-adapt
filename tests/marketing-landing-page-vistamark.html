@@ -1,0 +1,590 @@
+<html lang="en" vid="0"><head vid="1">
+    <meta charset="UTF-8" vid="2">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" vid="3">
+    <title vid="4">VistaMark | Marketing Landing Page</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" vid="5">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" vid="6">
+    <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@100..700&amp;family=EB+Garamond:ital,wght@0,400;0,500;1,400&amp;family=JetBrains+Mono:wght@300;400&amp;display=swap" rel="stylesheet" vid="7">
+    
+    <style vid="8">
+        :root {
+            
+            --bg-color: #465541; 
+            --text-color: #E2EFE1; 
+            --border-color: rgba(226, 239, 225, 0.4); 
+            --hover-bg: #4F5F4A;
+            
+            
+            --font-display: 'Antonio', sans-serif; 
+            --font-serif: 'EB Garamond', serif; 
+            --font-mono: 'JetBrains Mono', monospace; 
+            
+            --spacing-unit: 1rem;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-serif);
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        
+        .text-display {
+            font-family: var(--font-display);
+            text-transform: uppercase;
+            line-height: 0.9;
+        }
+
+        .text-mono {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .text-serif {
+            font-family: var(--font-serif);
+            font-weight: 400;
+        }
+
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            border-top: 1px solid var(--border-color);
+            border-left: 1px solid var(--border-color);
+        }
+
+        .grid-cell {
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        
+        header {
+            width: 100%;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .nav-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+        }
+
+        .nav-item {
+            padding: 1.5rem;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .nav-item:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .nav-item:last-child {
+            border-right: none;
+        }
+
+        .brand-huge {
+            font-size: 14vw;
+            font-weight: 600;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0;
+            line-height: 0.85;
+            letter-spacing: -0.02em;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        
+        .hero-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            min-height: 80vh;
+        }
+
+        .hero-meta {
+            grid-column: span 1;
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .hero-content {
+            grid-column: span 3;
+            border-bottom: 1px solid var(--border-color);
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .hero-image {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 400px;
+            height: 280px;
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+            filter: grayscale(20%);
+            z-index: 1;
+        }
+
+        .hero-statement {
+            font-size: 4rem;
+            line-height: 1.1;
+            max-width: 90%;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        
+        .services-row {
+            grid-column: span 12;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .service-card {
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 2rem 1.5rem;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .service-card:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .service-card:hover .arrow-icon {
+            transform: translateX(10px);
+        }
+
+        .service-num {
+            font-family: var(--font-mono);
+            opacity: 0.6;
+            margin-bottom: 1rem;
+        }
+
+        .service-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            line-height: 1;
+        }
+
+        .service-desc {
+            font-size: 1rem;
+            opacity: 0.8;
+            line-height: 1.4;
+            max-width: 90%;
+        }
+
+        .arrow-icon {
+            align-self: flex-end;
+            transition: transform 0.3s ease;
+        }
+
+        
+        .client-section {
+            grid-column: span 12;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+        }
+
+        .client-header {
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 2rem;
+        }
+
+        .client-list-container {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .client-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 2.5rem;
+            line-height: 1;
+        }
+
+        .client-item:last-child {
+            border-bottom: none;
+        }
+
+        .client-item:hover {
+            background-color: var(--text-color);
+            color: var(--bg-color);
+            padding-left: 3rem;
+        }
+
+        .client-meta {
+            font-size: 0.8rem;
+            font-family: var(--font-mono);
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .client-item:hover .client-meta {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        
+        .insights-grid {
+            grid-column: span 12;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .insight-card {
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .insight-image-container {
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .insight-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .insight-card:hover .insight-image {
+            transform: scale(1.05);
+        }
+
+        .insight-content {
+            padding: 2rem;
+        }
+
+        .insight-date {
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        
+        .footer-grid {
+            grid-column: span 12;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .footer-col {
+            border-right: 1px solid var(--border-color);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .footer-link {
+            text-decoration: none;
+            color: var(--text-color);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+
+        .newsletter-input {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            width: 100%;
+            padding: 0.5rem 0;
+            color: var(--text-color);
+            font-family: var(--font-mono);
+            outline: none;
+            margin-top: 1rem;
+        }
+
+        .newsletter-input::placeholder {
+            color: rgba(226, 239, 225, 0.5);
+        }
+
+        
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .big-text-footer {
+            font-size: 14vw;
+            line-height: 0.8;
+            padding: 0;
+            border-bottom: none;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        
+        @media (max-width: 1024px) {
+            .grid-container {
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .nav-grid, .hero-section, .services-row, .client-section, .insights-grid, .footer-grid {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .hero-image {
+                position: relative;
+                width: 100%;
+                height: 300px;
+                top: 0;
+                right: 0;
+                margin-bottom: 2rem;
+                border: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .hero-content {
+                padding: 2rem;
+            }
+
+            .brand-huge {
+                font-size: 22vw;
+            }
+            
+            .client-item {
+                font-size: 1.8rem;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body vid="9">
+
+    <header vid="10">
+        <div class="nav-grid" vid="11">
+            <div class="nav-item text-display" style="font-size: 1.5rem;" vid="12">VISTAMARK</div>
+            <div class="nav-item" vid="13">SERVICES</div>
+            <div class="nav-item" vid="14">INSIGHTS</div>
+            <div class="nav-item" vid="15">GET STARTED [ + ]</div>
+        </div>
+    </header>
+
+    <div class="brand-huge text-display" vid="16">VISTAMARK</div>
+
+    <main class="grid-container" vid="17">
+        
+        
+        <div class="hero-section" style="grid-column: span 12;" vid="18">
+            <div class="hero-meta" vid="19">
+                <div vid="20">
+                    <span class="text-mono" vid="21">EST. 2019</span><br vid="22">
+                    <span class="text-mono" vid="23">AUSTIN / GLOBAL</span>
+                </div>
+                <div class="text-mono" vid="24">
+                    SCROLL TO EXPLORE ↓
+                </div>
+            </div>
+            <div class="hero-content" vid="25">
+                <img src="Images/otcombo_httpss.mj.runmp-gao3z4P4_a_close_up_shot_of_a_woman_s_bd70fcb7-7725-4585-96ed-c9db7b0b1d41_3.png" alt="Marketing analytics dashboard" class="hero-image" vid="26">
+                <h1 class="hero-statement text-serif" vid="27">
+                    We engineer campaigns that move markets. Not just reach—lasting brand impact.
+                </h1>
+                <p class="text-mono" style="max-width: 400px; line-height: 1.6;" vid="28">
+                    Through audience analytics, creative strategy, and performance optimization, we help brands accelerate growth and dominate their category.
+                </p>
+            </div>
+        </div>
+
+        
+        <div class="grid-cell text-mono" style="grid-column: span 12; border-bottom: none; padding-bottom: 0;" vid="29">
+            OUR SERVICES
+        </div>
+        
+        <div class="services-row" vid="30">
+            <div class="service-card" vid="31">
+                <div vid="32">
+                    <div class="service-num text-mono" vid="33">01</div>
+                    <h3 class="service-title text-display" vid="34">SEO &amp;<br vid="35">Content</h3>
+                    <p class="service-desc text-serif" vid="36">Data-driven search strategy and premium content creation that puts your brand at the top of every results page.</p>
+                </div>
+                <span class="arrow-icon text-mono" vid="37">→</span>
+            </div>
+            <div class="service-card" vid="38">
+                <div vid="39">
+                    <div class="service-num text-mono" vid="40">02</div>
+                    <h3 class="service-title text-display" vid="41">Paid<br vid="42">Media</h3>
+                    <p class="service-desc text-serif" vid="43">High-performance ad campaigns across Google, Meta, and programmatic channels that maximize ROAS.</p>
+                </div>
+                <span class="arrow-icon text-mono" vid="44">→</span>
+            </div>
+            <div class="service-card" vid="45">
+                <div vid="46">
+                    <div class="service-num text-mono" vid="47">03</div>
+                    <h3 class="service-title text-display" vid="48">Brand<br vid="49">Strategy</h3>
+                    <p class="service-desc text-serif" vid="50">Crafting compelling brand identities and positioning that resonates with your target audience at every touchpoint.</p>
+                </div>
+                <span class="arrow-icon text-mono" vid="51">→</span>
+            </div>
+            <div class="service-card" vid="52">
+                <div vid="53">
+                    <div class="service-num text-mono" vid="54">04</div>
+                    <h3 class="service-title text-display" vid="55">Analytics<br vid="56">&amp; Insights</h3>
+                    <p class="service-desc text-serif" vid="57">Real-time dashboards and deep-dive reporting that turn raw data into actionable growth strategies.</p>
+                </div>
+                <span class="arrow-icon text-mono" vid="58">→</span>
+            </div>
+        </div>
+
+        
+        <div class="client-section" vid="59">
+            <div class="client-header" vid="60">
+                <span class="text-mono" vid="61">CASE STUDIES</span>
+                <p class="text-serif" style="margin-top: 2rem; font-size: 1.2rem; line-height: 1.4;" vid="62">
+                    We partner with ambitious brands ready to break through plateaus and redefine what growth looks like.
+                </p>
+            </div>
+            <div class="client-list-container" vid="63">
+                <div class="client-item text-serif" vid="64">
+                    <span vid="65">NovaBrew Co.</span>
+                    <span class="client-meta text-mono" vid="66">DTC BEVERAGE — 340% ROAS</span>
+                </div>
+                <div class="client-item text-serif" vid="67">
+                    <span vid="68">Peakline Fitness</span>
+                    <span class="client-meta text-mono" vid="69">HEALTH & WELLNESS — 5X LEADS</span>
+                </div>
+                <div class="client-item text-serif" vid="70">
+                    <span vid="71">Arden & Cole</span>
+                    <span class="client-meta text-mono" vid="72">LUXURY FASHION — +82% TRAFFIC</span>
+                </div>
+                <div class="client-item text-serif" vid="73">
+                    <span vid="74">Finley Labs</span>
+                    <span class="client-meta text-mono" vid="75">SAAS — 2.4X CONVERSION</span>
+                </div>
+                <div class="client-item text-serif" vid="76">
+                    <span vid="77">TerraRoot</span>
+                    <span class="client-meta text-mono" vid="78">SUSTAINABILITY — 12K NEW SUBS</span>
+                </div>
+                <div class="client-item text-serif" vid="79">
+                    <span vid="80">ClearPath AI</span>
+                    <span class="client-meta text-mono" vid="81">ENTERPRISE TECH — $4.2M PIPELINE</span>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="grid-cell text-mono" style="grid-column: span 12; border-bottom: none; border-top: 1px solid var(--border-color);" vid="82">
+            LATEST INSIGHTS
+        </div>
+
+        <div class="insights-grid" vid="83">
+            <article class="insight-card" vid="84">
+                <div class="insight-image-container" vid="85">
+                    <img src="Images/otcombo_a_group_of_people_climbing_a_gaint_mountain_--ar_43_-_ece7a533-a5cc-40ce-b94c-9971d59738be_0.png" alt="Marketing analytics" class="insight-image" vid="86">
+                </div>
+                <div class="insight-content" vid="87">
+                    <span class="text-mono insight-date" vid="88">JAN 15, 2026 — 5 MIN READ</span>
+                    <h2 class="text-serif" style="font-size: 2rem; margin-bottom: 1rem;" vid="89">Why first-party data is the new competitive moat.</h2>
+                    <p class="text-serif" style="opacity: 0.8;" vid="90">How leading brands are building owned audiences to future-proof against platform volatility.</p>
+                </div>
+            </article>
+            <article class="insight-card" style="border-right: none;" vid="91">
+                <div class="insight-image-container" vid="92">
+                    <img src="Images/otcombo_help_center_--ar_21_--sref_httpss.mj.runl2zSDu86pLY_-_6b24c7d3-39e5-4031-b7ea-7ca4ebe343d9_0.png" alt="Data visualization" class="insight-image" vid="93">
+                </div>
+                <div class="insight-content" vid="94">
+                    <span class="text-mono insight-date" vid="95">DEC 04, 2025 — 8 MIN READ</span>
+                    <h2 class="text-serif" style="font-size: 2rem; margin-bottom: 1rem;" vid="96">The attribution problem no one is solving.</h2>
+                    <p class="text-serif" style="opacity: 0.8;" vid="97">Multi-touch attribution models that actually reflect the modern buyer journey across channels.</p>
+                </div>
+            </article>
+        </div>
+
+        
+        <footer class="footer-grid" vid="98">
+            <div class="footer-col" vid="99">
+                <span class="text-mono" style="margin-bottom: 1rem;" vid="100">HEADQUARTERS</span>
+                <address class="text-serif" style="font-style: normal; opacity: 0.8;" vid="101">
+                    200 Congress Ave, Suite 12<br vid="102">
+                    Austin, TX 78701<br vid="103">
+                    United States
+                </address>
+            </div>
+            <div class="footer-col" vid="104">
+                <span class="text-mono" style="margin-bottom: 1rem;" vid="105">SOCIAL</span>
+                <a href="#" class="footer-link" vid="106">LINKEDIN ↗</a>
+                <a href="#" class="footer-link" vid="107">INSTAGRAM ↗</a>
+                <a href="#" class="footer-link" vid="108">TWITTER / X ↗</a>
+            </div>
+            <div class="footer-col" vid="109">
+                <span class="text-mono" style="margin-bottom: 1rem;" vid="110">LEGAL</span>
+                <a href="#" class="footer-link" vid="111">PRIVACY POLICY</a>
+                <a href="#" class="footer-link" vid="112">TERMS OF SERVICE</a>
+                <a href="#" class="footer-link" vid="113">SITEMAP</a>
+            </div>
+            <div class="footer-col" style="border-right: none;" vid="114">
+                <span class="text-mono" style="margin-bottom: 1rem;" vid="115">NEWSLETTER</span>
+                <p class="text-serif" style="font-size: 0.9rem; opacity: 0.8;" vid="116">Weekly marketing trends and growth tactics.</p>
+                <form onsubmit="event.preventDefault();" vid="117">
+                    <input type="email" placeholder="EMAIL ADDRESS" class="newsletter-input" vid="118">
+                    <button type="submit" class="text-mono" style="background: none; border: none; color: inherit; margin-top: 1rem; cursor: pointer;" vid="119">SUBSCRIBE →</button>
+                </form>
+            </div>
+        </footer>
+
+        <div class="brand-huge text-display" style="border-bottom: none;" vid="120">VISTAMARK</div>
+
+    </main>
+
+
+</body></html>

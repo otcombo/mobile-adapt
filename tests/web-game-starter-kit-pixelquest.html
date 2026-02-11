@@ -1,0 +1,623 @@
+<html lang="en" vid="0"><head vid="1">
+    <meta charset="UTF-8" vid="2">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" vid="3">
+    <title vid="4">PixelQuest | Web Game Starter Kit</title>
+    <style vid="5">
+        :root {
+            
+            --color-primary: #0033CC; 
+            --color-bg: #FFFFFF;
+            --color-surface: #F8F8F8;
+            
+            
+            --font-stack: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            
+            
+            --border-width: 1px;
+            --spacing-unit: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-primary);
+            font-family: var(--font-stack);
+            font-size: 16px;
+            line-height: 1.4;
+            
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        
+        .uppercase { text-transform: uppercase; }
+        .flex { display: flex; }
+        .grid { display: grid; }
+        .border-bottom { border-bottom: var(--border-width) solid var(--color-primary); }
+        .border-top { border-top: var(--border-width) solid var(--color-primary); }
+        .border-right { border-right: var(--border-width) solid var(--color-primary); }
+        .border-left { border-left: var(--border-width) solid var(--color-primary); }
+        .w-full { width: 100%; }
+
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+        }
+
+        a {
+            color: var(--color-primary);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        
+        header {
+            position: sticky;
+            top: 0;
+            background: var(--color-bg);
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+            border-bottom: var(--border-width) solid var(--color-primary);
+            padding: 0 var(--spacing-unit);
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--color-primary);
+            
+            clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
+        }
+
+        nav ul {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        nav a {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 80vh;
+            border-bottom: var(--border-width) solid var(--color-primary);
+        }
+
+        .hero-content {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-right: var(--border-width) solid var(--color-primary);
+        }
+
+        .hero-title {
+            font-size: 64px;
+            line-height: 0.9;
+            margin-bottom: 24px;
+        }
+
+        .hero-meta {
+            font-size: 14px;
+            text-transform: uppercase;
+            margin-bottom: auto;
+        }
+
+        .hero-cta {
+            margin-top: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 20px 0;
+            border-top: var(--border-width) solid var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 18px;
+            transition: background 0.2s, color 0.2s;
+        }
+        
+        .hero-cta:hover {
+            background: var(--color-primary);
+            color: var(--color-bg);
+            padding-left: 10px; 
+            padding-right: 10px;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            
+            filter: sepia(0.2) hue-rotate(190deg) contrast(1.1); 
+        }
+
+        
+        .section-header {
+            padding: 20px;
+            border-bottom: var(--border-width) solid var(--color-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--color-surface);
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); 
+            width: 100%;
+        }
+
+        .service-item {
+            padding: 20px;
+            border-right: var(--border-width) solid var(--color-primary);
+            border-bottom: var(--border-width) solid var(--color-primary);
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .service-item:hover {
+            background: var(--color-primary);
+            color: var(--color-bg);
+        }
+
+        .service-item:nth-child(4n) {
+            border-right: none;
+        }
+
+        .service-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            opacity: 0.7;
+        }
+
+        .service-title {
+            font-size: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            line-height: 1.1;
+        }
+
+        
+        .case-study-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border-bottom: var(--border-width) solid var(--color-primary);
+        }
+
+        .case-card {
+            border-right: var(--border-width) solid var(--color-primary);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .case-card:last-child {
+            border-right: none;
+        }
+
+        .case-image-container {
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            border-bottom: var(--border-width) solid var(--color-primary);
+        }
+
+        .case-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .case-card:hover .case-image {
+            transform: scale(1.02);
+        }
+
+        .case-info {
+            padding: 20px;
+            background: var(--color-bg);
+            flex-grow: 1;
+        }
+
+        .case-date {
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .case-title {
+            font-size: 24px;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            color: var(--color-primary);
+        }
+
+        .case-tags {
+            font-size: 11px;
+            text-transform: uppercase;
+            opacity: 0.8;
+            letter-spacing: 0.05em;
+        }
+
+        
+        .client-list-header {
+            padding: 15px 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-bottom: var(--border-width) solid var(--color-primary);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .client-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr; 
+        }
+
+        .client-item {
+            padding: 12px 20px;
+            font-size: 14px;
+            text-transform: uppercase;
+            border-bottom: var(--border-width) solid var(--color-primary); 
+            border-right: var(--border-width) solid var(--color-primary);
+            cursor: pointer;
+        }
+        
+        .client-item:nth-child(2n) {
+            border-right: none;
+        }
+
+        .client-item:hover {
+            text-decoration: underline;
+        }
+
+        
+        .contact-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .contact-header {
+            padding: 40px;
+            border-right: var(--border-width) solid var(--color-primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .contact-form {
+            padding: 0;
+        }
+
+        .form-row {
+            display: flex;
+            border-bottom: var(--border-width) solid var(--color-primary);
+        }
+
+        .form-group {
+            flex: 1;
+            padding: 0;
+            border-right: var(--border-width) solid var(--color-primary);
+            position: relative;
+        }
+
+        .form-group:last-child {
+            border-right: none;
+        }
+
+        .form-label {
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 700;
+            pointer-events: none;
+        }
+
+        .form-input {
+            width: 100%;
+            border: none;
+            padding: 30px 15px 10px 15px;
+            font-size: 16px;
+            font-family: var(--font-stack);
+            color: var(--color-primary);
+            outline: none;
+            background: transparent;
+            text-transform: uppercase;
+        }
+
+        .form-input::placeholder {
+            color: var(--color-primary);
+            opacity: 0.3;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 30px;
+            background: var(--color-bg);
+            border: none;
+            color: var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 24px;
+            cursor: pointer;
+            text-align: left;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: var(--color-primary);
+            color: var(--color-bg);
+        }
+
+        
+        footer {
+            border-top: var(--border-width) solid var(--color-primary);
+            padding: 40px 20px;
+            display: flex;
+            justify-content: space-between;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        
+        @media (max-width: 768px) {
+            .hero, .case-study-section, .contact-section, .client-list, .service-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-content {
+                border-right: none;
+                border-bottom: var(--border-width) solid var(--color-primary);
+            }
+            .case-card {
+                border-right: none;
+                border-bottom: var(--border-width) solid var(--color-primary);
+            }
+            .service-item {
+                border-right: none !important;
+            }
+            .client-item {
+                border-right: none !important;
+            }
+        }
+        
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--color-bg); 
+            border-left: 1px solid var(--color-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-primary); 
+        }
+
+    </style>
+</head>
+<body vid="6">
+
+    <header vid="7">
+        <div class="logo" vid="8">
+            <div class="logo-icon" vid="9"></div>
+            PIXELQUEST
+        </div>
+        <nav vid="10">
+            <ul vid="11">
+                <li vid="12"><a href="#" vid="13">Features</a></li>
+                <li vid="14"><a href="#" vid="15">Showcase</a></li>
+                <li vid="16"><a href="#" vid="17">Docs</a></li>
+                <li vid="18"><a href="#" vid="19">Community</a></li>
+            </ul>
+        </nav>
+        <div style="display:none;" id="mobile-menu-icon" vid="20">
+            
+            <div style="width:24px; height:2px; background:var(--color-primary); margin-bottom:4px;" vid="21"></div>
+            <div style="width:24px; height:2px; background:var(--color-primary); margin-bottom:4px;" vid="22"></div>
+            <div style="width:24px; height:2px; background:var(--color-primary);" vid="23"></div>
+        </div>
+    </header>
+
+    <main vid="24">
+        
+        <section class="hero" vid="25">
+            <div class="hero-content" vid="26">
+                <div class="hero-meta" vid="27">
+                    Web Game Starter Kit<br vid="28">
+                    2D / 3D / Multiplayer
+                </div>
+                <div vid="29">
+                    <h1 class="hero-title" vid="30">BUILD<br vid="31">BROWSER GAMES<br vid="32">FASTER</h1>
+                    <a href="#" class="hero-cta" vid="33">
+                        <span vid="34">Get Started Free</span>
+                        <span vid="35">→</span>
+                    </a>
+                </div>
+            </div>
+            <img src="Images/otcombo_Daytime_cinematic_photo_on_a_clear_sunny_summer_day.__0941d90b-27a5-4a6a-a251-bccf5c30ab57_3.png" class="hero-image" alt="Game Controller Neon Lights" vid="36">
+        </section>
+
+        
+        <div class="section-header" vid="37">
+            <h3 vid="38">Core Features</h3>
+            
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" vid="39">
+                <path d="M6 9L12 15L18 9" vid="40"></path>
+            </svg>
+        </div>
+        <section class="service-grid" vid="41">
+            <div class="service-item" vid="42">
+                <span class="service-label" vid="43">01 / Rendering</span>
+                <span class="service-title" vid="44">2D Sprite<br vid="45">Engine</span>
+            </div>
+            <div class="service-item" vid="46">
+                <span class="service-label" vid="47">02 / Graphics</span>
+                <span class="service-title" vid="48">WebGL 3D<br vid="49">Pipeline</span>
+            </div>
+            <div class="service-item" vid="50">
+                <span class="service-label" vid="51">03 / Physics</span>
+                <span class="service-title" vid="52">Collision<br vid="53">Detection</span>
+            </div>
+            <div class="service-item" vid="54">
+                <span class="service-label" vid="55">04 / Network</span>
+                <span class="service-title" vid="56">Multiplayer<br vid="57">Sync</span>
+            </div>
+            <div class="service-item" vid="58">
+                <span class="service-label" vid="59">05 / Audio</span>
+                <span class="service-title" vid="60">Sound<br vid="61">Manager</span>
+            </div>
+            <div class="service-item" vid="62">
+                <span class="service-label" vid="63">06 / Input</span>
+                <span class="service-title" vid="64">Gamepad<br vid="65">Support</span>
+            </div>
+            <div class="service-item" vid="66">
+                <span class="service-label" vid="67">07 / Assets</span>
+                <span class="service-title" vid="68">Tilemap<br vid="69">Editor</span>
+            </div>
+            <div class="service-item" vid="70">
+                <span class="service-label" vid="71">08 / Deploy</span>
+                <span class="service-title" vid="72">One-Click<br vid="73">Publishing</span>
+            </div>
+        </section>
+
+        
+        <div class="section-header" vid="74">
+            <h3 vid="75">Games Built With PixelQuest</h3>
+        </div>
+        <section class="case-study-section" vid="76">
+            <article class="case-card" vid="77">
+                <div class="case-image-container" vid="78">
+                    <img src="Images/otcombo_a_purple_sunset_sky_with_the_city_skyline_in_view_pal_42cbfd39-ce61-4d2d-854a-c3cffca89e5e_2.png" class="case-image" alt="Retro Arcade Game" vid="79">
+                </div>
+                <div class="case-info" vid="80">
+                    <div class="case-date" vid="81">v2.4 Release</div>
+                    <h2 class="case-title" vid="82">Neon Drift Racing</h2>
+                    <div class="case-tags" vid="83">3D / WebGL / Multiplayer</div>
+                </div>
+            </article>
+            <article class="case-card" vid="84">
+                <div class="case-image-container" vid="85">
+                    <img src="Images/otcombo_cottage_with_a_red_roof_in_a_countryside_landscape_lu_d2af08b1-e29b-4797-af21-917978481ac1_1.png" class="case-image" alt="Gaming Setup" vid="86">
+                </div>
+                <div class="case-info" vid="87">
+                    <div class="case-date" vid="88">v1.8 Release</div>
+                    <h2 class="case-title" vid="89">Dungeon Crawler RPG</h2>
+                    <div class="case-tags" vid="90">2D / Pixel Art / Roguelike</div>
+                </div>
+            </article>
+        </section>
+
+        
+        <div class="client-list-header" vid="91">
+            <span vid="92">Trusted By Studios</span>
+            <span vid="93">(A-Z)</span>
+        </div>
+        <section class="client-list" vid="94">
+            <div class="client-item" vid="95">Arcade Foundry</div>
+            <div class="client-item" vid="96">BitForge Studios</div>
+            <div class="client-item" vid="97">Chromatic Games</div>
+            <div class="client-item" vid="98">Dreambox Interactive</div>
+            <div class="client-item" vid="99">Ember Pixel Co.</div>
+            <div class="client-item" vid="100">Flashpoint Labs</div>
+            <div class="client-item" vid="101">Gravity Well Games</div>
+            <div class="client-item" vid="102">Hypercube Studios</div>
+            <div class="client-item" vid="103">Indie Spark Collective</div>
+            <div class="client-item" vid="104">Joystick Junction</div>
+            <div class="client-item" vid="105">Kinetica Digital</div>
+            <div class="client-item" vid="106">Lightspeed Play</div>
+            <div class="client-item" vid="107">Moonshot Games</div>
+            <div class="client-item" vid="108">NovaByte Entertainment</div>
+            <div class="client-item" vid="109">Overworld Studios</div>
+            <div class="client-item" vid="110">Polygon Forge</div>
+        </section>
+
+        
+        <section class="contact-section" vid="111">
+            <div class="contact-header" vid="112">
+                <h2 style="font-size: 40px; margin-bottom: 20px;" vid="113">START<br vid="114">BUILDING</h2>
+                <p class="uppercase" style="font-size: 14px; max-width: 300px;" vid="115">
+                    Join thousands of game developers. Tell us about your project and get early access to PixelQuest Pro.
+                </p>
+            </div>
+            <form class="contact-form" vid="116">
+                <div class="form-row" vid="117">
+                    <div class="form-group" vid="118">
+                        <label class="form-label" vid="119">Name</label>
+                        <input type="text" class="form-input" placeholder="Your Name" vid="120">
+                    </div>
+                    <div class="form-group" vid="121">
+                        <label class="form-label" vid="122">Studio</label>
+                        <input type="text" class="form-input" placeholder="Studio or Team Name" vid="123">
+                    </div>
+                </div>
+                <div class="form-row" vid="124">
+                    <div class="form-group" vid="125">
+                        <label class="form-label" vid="126">Email</label>
+                        <input type="email" class="form-input" placeholder="dev@yourstudio.com" vid="127">
+                    </div>
+                </div>
+                <div class="form-row" vid="128">
+                    <div class="form-group" vid="129">
+                        <label class="form-label" vid="130">Game Type</label>
+                        <input type="text" class="form-input" placeholder="2D / 3D / Multiplayer" vid="131">
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn" vid="132">
+                    Launch My Project →
+                </button>
+            </form>
+        </section>
+    </main>
+
+    <footer vid="133">
+        <div class="copyright" vid="134">
+            © 2026 PixelQuest. All rights reserved.
+        </div>
+        <div class="footer-links" vid="135">
+            <a href="#" vid="136">Terms</a>
+            <a href="#" vid="137">Privacy</a>
+            <a href="#" vid="138">GitHub</a>
+            <a href="#" vid="139">Discord</a>
+        </div>
+    </footer>
+
+
+</body></html>

@@ -4,12 +4,14 @@ description: "Adapt static HTML pages for mobile. Use when asked to '适配移�
 metadata:
   author: otcombo
   version: "1.0.0"
-  argument-hint: <html-file-path>
+  argument-hint: "<html-file-or-folder-path>"
 ---
 
 # Mobile Adapt Skill
 
 Audit, fix, and verify mobile responsiveness for static HTML pages. The workflow proceeds through 6 layers: Input Parsing → Visual Baseline → Code Audit → Fix Application → Verification → Report Output.
+
+**Breakpoint system**: Uses [Google Material Design Window Size Classes](https://developer.android.com/develop/ui/compose/layout/window-size-classes) — Compact (< 600px), Medium (600–839px), Expanded (≥ 840px).
 
 **Complementary to `web-design-guidelines`**: This skill focuses specifically on mobile adaptation, while `web-design-guidelines` covers broader UI/UX concerns (color, typography, layout patterns, accessibility). After running this skill, suggest the user run `/web-design-guidelines` for a complete review.
 
@@ -19,7 +21,19 @@ Audit, fix, and verify mobile responsiveness for static HTML pages. The workflow
 
 ### Layer 0: Input Parsing
 
-1. **Read the HTML file** provided as the argument.
+**Argument handling:**
+
+The skill argument can be:
+
+1. **A single HTML file path** (e.g., `index.html`, `/path/to/page.html`) — process that file.
+2. **A folder path** (e.g., `./site/`, `/path/to/project/`) — find all `.html` files in the folder (non-recursive), process each one sequentially. Share a single HTTP server across all files.
+3. **No argument / empty** — ask the user which file or folder to process using `AskUserQuestion`.
+
+For folder mode, output a combined report with per-file sections.
+
+**For each HTML file:**
+
+1. **Read the HTML file**.
 2. **Discover associated CSS files**: Parse `<link rel="stylesheet" href="...">` and `<style>` blocks.
    - For relative `href`, resolve against the HTML file's directory.
    - For absolute URLs (CDN), note them but do NOT modify (report only).
@@ -36,10 +50,16 @@ Audit, fix, and verify mobile responsiveness for static HTML pages. The workflow
 
 Read the viewport configurations from `references/viewport-configs.md`.
 
-For each of the 3 test viewports (375px, 393px, 768px):
+**Start an HTTP server** in the HTML file's directory (needed because Playwright MCP blocks `file://`):
+
+```bash
+cd <html-directory> && python3 -m http.server <random-port>
+```
+
+For each of the 3 test viewports (375px Compact, 768px Medium, 1024px Expanded):
 
 1. `browser_resize(width, height)`
-2. `browser_navigate("file://<absolute-path-to-html>")`
+2. `browser_navigate("http://localhost:<port>/<filename>")`
 3. `browser_wait_for(time: 2)` — allow full render
 4. `browser_take_screenshot(type: "png", filename: "<base>-before-<width>px.png", fullPage: true)`
 5. `browser_snapshot()` — capture accessibility tree for later comparison
@@ -120,9 +140,9 @@ html {
 
 #### 4a. After Screenshots
 
-For each of the 3 viewports:
+For each of the 3 viewports (375px, 768px, 1024px):
 1. `browser_resize(width, height)`
-2. `browser_navigate("file://<absolute-path-to-html>")` — reload to pick up changes
+2. `browser_navigate("http://localhost:<port>/<filename>")` — reload to pick up changes
 3. `browser_wait_for(time: 2)`
 4. `browser_take_screenshot(type: "png", filename: "<base>-after-<width>px.png", fullPage: true)`
 5. `browser_snapshot()` — capture updated accessibility tree
@@ -132,9 +152,10 @@ For each of the 3 viewports:
 Run the interaction tests defined in `references/viewport-configs.md`:
 
 1. **Horizontal overflow test**: Use `browser_evaluate()` to check `document.body.scrollWidth > window.innerWidth`. If true after fixes, flag as **regression**.
-2. **Navigation click test**: Find a nav link in the snapshot, click it, verify no layout break.
-3. **Form focus test**: If forms exist, click an input, verify focus state.
-4. **Touch target audit**: Use `browser_evaluate()` to measure all interactive elements. Report any still below 44x44px.
+2. **Hamburger menu test** (at 375px only): Verify hamburger icon is visible, click to open, verify nav items appear, click to close.
+3. **Navigation click test**: Open hamburger (if compact), click a nav link, verify no layout break.
+4. **Form focus test**: If forms exist, click an input, verify focus state.
+5. **Touch target audit**: Use `browser_evaluate()` to measure all interactive elements. Report any still below 44x44px.
 
 ### Layer 5: Output Report (Chinese)
 
@@ -181,17 +202,17 @@ Generate the final report in **Chinese (中文)** using this template:
 
 ## 截图对比
 
-### iPhone SE (375px)
+### Compact — Phone (375px)
 - Before: `{base}-before-375px.png`
 - After: `{base}-after-375px.png`
 
-### iPhone 14 Pro (393px)
-- Before: `{base}-before-393px.png`
-- After: `{base}-after-393px.png`
-
-### iPad Mini (768px)
+### Medium — Tablet Portrait (768px)
 - Before: `{base}-before-768px.png`
 - After: `{base}-after-768px.png`
+
+### Expanded — Tablet Landscape / Desktop (1024px)
+- Before: `{base}-before-1024px.png`
+- After: `{base}-after-1024px.png`
 
 ---
 
@@ -200,6 +221,7 @@ Generate the final report in **Chinese (中文)** using this template:
 | 测试项 | 结果 | 备注 |
 |--------|------|------|
 | 水平溢出检测 | PASS/FAIL | scrollWidth vs viewportWidth |
+| 汉堡菜单 | PASS/FAIL/SKIP | 点击展开/收起是否正常 |
 | 导航点击 | PASS/FAIL/SKIP | ... |
 | 表单聚焦 | PASS/FAIL/SKIP | ... |
 | 触控目标尺寸 | {n} 个元素不达标 | 列出前 5 个 |
@@ -278,7 +300,7 @@ For elements with inline `style` attributes containing fixed widths:
 
 ```css
 /* mobile-adapt: auto-generated — inline style override */
-@media (max-width: 768px) {
+@media (max-width: 839px) {
   [style*="width:"] {
     max-width: 100% !important;
   }
@@ -302,3 +324,11 @@ When the page links multiple local CSS files:
 - **web-design-guidelines** handles: color theory, typography hierarchy, spacing systems, accessibility (ARIA, screen readers), animation principles, dark mode design.
 - **Overlap**: Both check font sizes and some accessibility concerns. If both are run, the second will see fixes from the first.
 - **Recommended order**: Run `mobile-adapt` first (structural fixes), then `web-design-guidelines` (design refinement).
+
+### Cleanup
+
+After all layers complete, kill the temporary HTTP server:
+
+```bash
+pkill -f "python3 -m http.server <port>"
+```

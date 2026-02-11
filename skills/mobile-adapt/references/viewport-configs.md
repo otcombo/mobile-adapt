@@ -1,12 +1,28 @@
 # Viewport Test Configurations
 
+## Breakpoint System — Google Window Size Classes
+
+Based on [Material Design Window Size Classes](https://developer.android.com/develop/ui/compose/layout/window-size-classes), converted from dp to CSS px (1dp = 1px on web):
+
+| Size Class | Width Range | CSS Breakpoint | Common Devices |
+|------------|-------------|----------------|----------------|
+| Compact | < 600px | `max-width: 599px` | Phone in portrait |
+| Medium | 600–839px | `min-width: 600px` and `max-width: 839px` | Tablet portrait, foldable portrait |
+| Expanded | >= 840px | `min-width: 840px` | Tablet landscape, desktop |
+
+**Key breakpoints for media queries:**
+
+- `@media (max-width: 599px)` — Compact only (phone-specific, e.g., hamburger nav)
+- `@media (max-width: 839px)` — Compact + Medium (main mobile/tablet breakpoint for most fixes)
+- `@media (min-width: 840px)` — Expanded (desktop overrides)
+
 ## Test Viewports
 
-| Device | Width | Height | Purpose |
-|--------|-------|--------|---------|
-| iPhone SE | 375 | 667 | Smallest usable mobile viewport |
-| iPhone 14 Pro | 393 | 852 | Mainstream smartphone |
-| iPad Mini | 768 | 1024 | Tablet breakpoint |
+| Device | Width | Height | Size Class | Purpose |
+|--------|-------|--------|------------|---------|
+| iPhone SE / Generic Phone | 375 | 667 | Compact | Worst-case phone experience |
+| iPad Mini / Generic Tablet | 768 | 1024 | Medium | Tablet portrait experience |
+| iPad Landscape / Small Desktop | 1024 | 768 | Expanded | Tablet landscape / desktop |
 
 ## Playwright Command Sequence
 
@@ -18,15 +34,21 @@ For each viewport, execute in order:
 browser_resize(width, height)
 ```
 
-### 2. Navigate to File
+### 2. Navigate to Page
 
-Construct `file://` URL from the absolute path of the HTML file:
+Use HTTP server or `file://` URL:
 
 ```
-browser_navigate("file:///absolute/path/to/file.html")
+browser_navigate("http://localhost:<port>/<filename>")
 ```
 
-**Important**: Always use the absolute path. If the user provides a relative path, resolve it against the current working directory.
+**Note**: If `file://` protocol is blocked by Playwright MCP, start a local HTTP server:
+
+```bash
+cd <html-file-directory> && python3 -m http.server <port>
+```
+
+Then navigate to `http://localhost:<port>/<filename>`.
 
 ### 3. Wait for Render
 
@@ -61,10 +83,10 @@ Format: `{base}-{phase}-{width}px.png`
 Examples:
 - `index-before-375px.png`
 - `index-after-375px.png`
-- `index-before-393px.png`
-- `index-after-393px.png`
 - `index-before-768px.png`
 - `index-after-768px.png`
+- `index-before-1024px.png`
+- `index-after-1024px.png`
 
 ## Interaction Tests (After Fix)
 
@@ -85,10 +107,17 @@ Perform these tests at the **375px** viewport (worst case):
 
 If `hasHorizontalOverflow` is true, flag as **CRITICAL** regression.
 
+### Hamburger Menu Test (Compact only)
+
+1. Use `browser_snapshot()` to verify hamburger toggle is visible
+2. Click the hamburger toggle with `browser_click()`
+3. Verify nav menu items appear in the snapshot
+4. Click again to close, verify items are hidden
+
 ### Navigation Click Test
 
-1. Use `browser_snapshot()` to find navigation links/buttons
-2. Click the first navigation element with `browser_click()`
+1. Open the hamburger menu (if compact viewport)
+2. Click the first navigation link with `browser_click()`
 3. Verify no layout breakage by checking `browser_snapshot()` again
 
 ### Form Focus Test
@@ -119,10 +148,16 @@ If `hasHorizontalOverflow` is true, flag as **CRITICAL** regression.
 }
 ```
 
-## file:// URL Construction
+## Serving Files
 
-Given a file path, construct the URL as follows:
+**Preferred**: Start a temporary HTTP server for the test session:
 
-- Absolute path `/home/user/site/index.html` → `file:///home/user/site/index.html`
-- Relative path `./site/index.html` → resolve to absolute first, then prefix with `file://`
-- Paths with spaces must be percent-encoded: `/my folder/page.html` → `file:///my%20folder/page.html`
+```bash
+cd <directory-containing-html> && python3 -m http.server <random-port>
+```
+
+Remember to kill the server after all tests complete:
+
+```bash
+pkill -f "python3 -m http.server <port>"
+```
