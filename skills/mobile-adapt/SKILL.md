@@ -17,6 +17,35 @@ Audit, fix, and verify mobile responsiveness for static HTML pages. The workflow
 
 ---
 
+## Execution Modes
+
+After parsing the input (file/folder) and reading the HTML, **ask the user to choose a mode** using `AskUserQuestion`:
+
+```
+question: "选择适配模式？"
+header: "Mode"
+options:
+  - label: "快速修复 (Quick)"
+    description: "仅修复 CRITICAL + HIGH 问题（viewport、溢出、触控目标、响应式布局、字体）。不截图、不做交互测试。适合快速迭代或已知问题少的页面。约 10 轮对话完成。"
+  - label: "全面审计 (Thorough)"
+    description: "完整 22 条规则审计 + 修复。含 3 组视口 before/after 截图对比、汉堡菜单注入、交互测试（溢出/导航/表单/触控目标）、详细中文报告。适合首次适配或复杂页面。约 30-40 轮对话完成。"
+```
+
+### Mode Comparison
+
+| | Quick | Thorough |
+|---|---|---|
+| **审计范围** | CRITICAL (C1-C4) + HIGH (H1-H5) | 全部 22 条规则 (C/H/M/L) |
+| **修复范围** | CRITICAL + HIGH | CRITICAL + HIGH + MEDIUM + L4 |
+| **截图** | 无 | 3 视口 × before/after = 6 张 |
+| **交互测试** | 仅水平溢出检测 | 溢出 + 汉堡菜单 + 导航 + 表单 + 触控目标 |
+| **导航适配** | CSS 纵向堆叠 | CSS-only 汉堡菜单 (checkbox hack) |
+| **报告** | 简洁摘要（变更列表） | 完整报告（截图对比 + 交互结果 + 手动建议） |
+| **HTTP 服务** | 不需要 | 需要临时启动 |
+| **适用场景** | 快速迭代、简单页面、已部分适配 | 首次适配、复杂页面、需要验证效果 |
+
+---
+
 ## Execution Flow
 
 ### Layer 0: Input Parsing
@@ -34,7 +63,8 @@ For folder mode, output a combined report with per-file sections.
 **For each HTML file:**
 
 1. **Read the HTML file**.
-2. **Discover associated CSS files**: Parse `<link rel="stylesheet" href="...">` and `<style>` blocks.
+2. **Ask the user to choose a mode** (Quick or Thorough) — see "Execution Modes" above. Only ask once; apply the same mode to all files in folder mode.
+3. **Discover associated CSS files**: Parse `<link rel="stylesheet" href="...">` and `<style>` blocks.
    - For relative `href`, resolve against the HTML file's directory.
    - For absolute URLs (CDN), note them but do NOT modify (report only).
 3. **Detect CSS frameworks**:
@@ -47,6 +77,10 @@ For folder mode, output a combined report with per-file sections.
      - **Report**: Note the detected framework and adjusted strategy.
 
 ### Layer 1: Visual Baseline (Playwright Screenshots)
+
+> **Quick mode**: Skip this entire layer. Proceed directly to Layer 2.
+
+> **Thorough mode**: Execute the full sequence below.
 
 Read the viewport configurations from `references/viewport-configs.md`.
 
@@ -70,7 +104,11 @@ Save the before screenshots. These will be compared to after screenshots in Laye
 
 Read the full checklist from `references/mobile-checklist.md`.
 
-**For each rule** (C1-C4, H1-H6, M1-M9, L1-L4):
+> **Quick mode**: Only audit CRITICAL (C1-C4) and HIGH (H1-H5) rules. Skip H6 and all MEDIUM/LOW.
+
+> **Thorough mode**: Audit all rules (C1-C4, H1-H6, M1-M9, L1-L4).
+
+**For each applicable rule**:
 
 1. Apply the **Detection** method described in the checklist.
 2. Search the HTML file and all associated CSS files for the patterns.
@@ -83,6 +121,10 @@ Read the full checklist from `references/mobile-checklist.md`.
 **Generate an internal findings list** (used in Layer 3 and Layer 5). Do not output to the user yet.
 
 ### Layer 3: Fix Application
+
+> **Quick mode**: Fix CRITICAL + HIGH only. For H5 navigation, use simple CSS vertical stacking (not hamburger menu).
+
+> **Thorough mode**: Fix CRITICAL + HIGH + MEDIUM + L4. For H5 navigation, inject full CSS-only hamburger menu.
 
 Process FAIL items in priority order: **CRITICAL → HIGH → MEDIUM** (skip LOW except L4).
 
@@ -136,9 +178,13 @@ html {
 
 ### Layer 4: Verification (Playwright Screenshots + Interaction Tests)
 
-**After all fixes are applied**, re-run Playwright for verification:
+**After all fixes are applied**, run verification.
 
-#### 4a. After Screenshots
+> **Quick mode**: Start an HTTP server if not already running. Only run the horizontal overflow test at 375px using `browser_evaluate()`. No screenshots.
+
+> **Thorough mode**: Full verification below.
+
+#### 4a. After Screenshots (Thorough only)
 
 For each of the 3 viewports (375px, 768px, 1024px):
 1. `browser_resize(width, height)`
@@ -151,15 +197,53 @@ For each of the 3 viewports (375px, 768px, 1024px):
 
 Run the interaction tests defined in `references/viewport-configs.md`:
 
-1. **Horizontal overflow test**: Use `browser_evaluate()` to check `document.body.scrollWidth > window.innerWidth`. If true after fixes, flag as **regression**.
-2. **Hamburger menu test** (at 375px only): Verify hamburger icon is visible, click to open, verify nav items appear, click to close.
-3. **Navigation click test**: Open hamburger (if compact), click a nav link, verify no layout break.
-4. **Form focus test**: If forms exist, click an input, verify focus state.
-5. **Touch target audit**: Use `browser_evaluate()` to measure all interactive elements. Report any still below 44x44px.
+1. **Horizontal overflow test** (Quick + Thorough): Use `browser_evaluate()` to check `document.body.scrollWidth > window.innerWidth`. If true after fixes, flag as **regression**.
+2. **Hamburger menu test** (Thorough only, at 375px): Verify hamburger icon is visible, click to open, verify nav items appear, click to close.
+3. **Navigation click test** (Thorough only): Open hamburger (if compact), click a nav link, verify no layout break.
+4. **Form focus test** (Thorough only): If forms exist, click an input, verify focus state.
+5. **Touch target audit** (Thorough only): Use `browser_evaluate()` to measure all interactive elements. Report any still below 44x44px.
 
 ### Layer 5: Output Report (Chinese)
 
-Generate the final report in **Chinese (中文)** using this template:
+Generate the final report in **Chinese (中文)**.
+
+> **Quick mode**: Use the simplified report format (see below).
+
+> **Thorough mode**: Use the full report template (see below).
+
+#### Quick Mode Report
+
+```markdown
+# 移动端快速适配报告
+
+**文件**: `{html_file_path}`
+**模式**: 快速修复
+**检测到的框架**: {framework_or_none}
+
+## 修复内容
+
+### CRITICAL
+- [FIXED/PASS] C1: Viewport Meta — {说明}
+- [FIXED/PASS] C2: Touch Action — {说明}
+- [FIXED/PASS] C3: Text Size Adjust — {说明}
+- [FIXED/PASS] C4: 水平溢出防护 — {说明}
+
+### HIGH
+- [FIXED/PASS/SKIP] H1: 触控目标 ≥ 44px — {说明}
+- [FIXED/PASS] H2: 响应式图片 — {说明}
+- [FIXED/PASS/SKIP] H3: 响应式布局 — {说明}
+- [FIXED/PASS] H4: 字体 ≥ 14px — {说明}
+- [FIXED/PASS/SKIP] H5: 导航适配 — {说明}
+
+## 溢出检测
+{PASS/FAIL}: scrollWidth={n} vs viewportWidth={n}
+
+> 如需截图对比、交互测试和完整 MEDIUM/LOW 审计，请使用「全面审计」模式重新运行。
+```
+
+#### Thorough Mode Report
+
+Use this full template:
 
 ---
 

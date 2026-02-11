@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>TechPulse - 科技资讯门户</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      src: url('custom-icons.woff2') format('woff2');
+      font-family: 'CustomIcons';
+    }
+    * { margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans SC', Arial, sans-serif; background: #f0f0f0; }
+    a { color: #0066cc; }
+
+    /* ===== HEADER ===== */
+    .top-bar { background: #1a1a2e; color: #aaa; font-size: 11px; padding: 4px 0; text-align: right; }
+    .top-bar a { color: #aaa; text-decoration: none; margin: 0 8px; font-size: 11px; }
+    .header { background: #16213e; color: white; padding: 15px 0; }
+    .header-inner { width: 1180px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 28px; font-weight: 700; letter-spacing: 2px; }
+    .logo span { color: #e94560; }
+    .search-box { display: flex; }
+    .search-box input { width: 280px; padding: 4px 8px; border: 1px solid #444; font-size: 12px; background: #0f3460; color: white; }
+    .search-box button { padding: 4px 10px; background: #e94560; color: white; border: none; font-size: 11px; cursor: pointer; }
+
+    /* ===== MAIN NAV ===== */
+    .main-nav { background: #0f3460; border-bottom: 2px solid #e94560; }
+    .main-nav ul { width: 1180px; margin: 0 auto; list-style: none; display: flex; }
+    .main-nav li a { display: block; color: white; text-decoration: none; padding: 8px 18px; font-size: 13px; white-space: nowrap; }
+    .main-nav li a:hover { background: #e94560; }
+    .main-nav li.has-dropdown { position: relative; }
+    .main-nav li.has-dropdown .dropdown { display: none; position: absolute; background: #16213e; min-width: 160px; z-index: 10; }
+    .main-nav li.has-dropdown:hover .dropdown { display: block; }
+    .main-nav .dropdown a { padding: 6px 15px; font-size: 12px; border-bottom: 1px solid #0f3460; }
+
+    /* ===== CONTENT AREA ===== */
+    .content-wrap { width: 1180px; margin: 20px auto; display: flex; gap: 20px; }
+    .main-content { width: 820px; }
+    .sidebar { width: 340px; }
+
+    /* ===== HERO BANNER ===== */
+    .hero-banner { position: relative; width: 820px; height: 420px; overflow: hidden; margin-bottom: 20px; }
+    .hero-banner img { width: 820px; height: 420px; object-fit: cover; }
+    .hero-banner .overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); padding: 30px; }
+    .hero-banner .overlay h2 { color: white; font-size: 24px; margin-bottom: 8px; }
+    .hero-banner .overlay p { color: #ccc; font-size: 13px; }
+
+    /* ===== NEWS GRID ===== */
+    .section-title { font-size: 18px; border-left: 4px solid #e94560; padding-left: 10px; margin: 20px 0 15px; }
+    .news-grid { display: flex; flex-wrap: wrap; gap: 15px; }
+    .news-card { width: 260px; background: white; border-radius: 4px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .news-card img { width: 260px; height: 160px; object-fit: cover; }
+    .news-card .card-body { padding: 12px; }
+    .news-card h3 { font-size: 14px; line-height: 1.4; margin-bottom: 6px; }
+    .news-card h3 a { color: #333; text-decoration: none; }
+    .news-card .meta { font-size: 11px; color: #999; }
+    .news-card .tag { display: inline-block; background: #e94560; color: white; font-size: 10px; padding: 1px 5px; border-radius: 2px; margin-right: 4px; }
+
+    /* ===== ARTICLE LIST ===== */
+    .article-list { margin-top: 20px; }
+    .article-item { display: flex; gap: 15px; background: white; padding: 15px; margin-bottom: 10px; border-radius: 4px; }
+    .article-item img { width: 200px; height: 130px; object-fit: cover; flex-shrink: 0; }
+    .article-item .info h3 { font-size: 16px; margin-bottom: 6px; }
+    .article-item .info h3 a { color: #333; text-decoration: none; }
+    .article-item .info p { font-size: 13px; color: #666; line-height: 1.6; }
+    .article-item .info .meta { font-size: 11px; color: #999; margin-top: 8px; }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-widget { background: white; border-radius: 4px; padding: 15px; margin-bottom: 20px; }
+    .sidebar-widget h4 { font-size: 15px; border-bottom: 2px solid #e94560; padding-bottom: 8px; margin-bottom: 12px; }
+    .hot-list { list-style: none; counter-reset: hot; }
+    .hot-list li { counter-increment: hot; padding: 8px 0; border-bottom: 1px dashed #eee; font-size: 13px; display: flex; align-items: flex-start; gap: 8px; }
+    .hot-list li::before { content: counter(hot); display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; background: #ddd; color: #666; font-size: 11px; border-radius: 2px; flex-shrink: 0; }
+    .hot-list li:nth-child(-n+3)::before { background: #e94560; color: white; }
+    .hot-list li a { color: #333; text-decoration: none; font-size: 13px; }
+
+    .ad-banner { width: 340px; height: 250px; background: #ddd; display: flex; align-items: center; justify-content: center; color: #999; font-size: 14px; margin-bottom: 20px; }
+
+    .tag-cloud { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag-cloud a { display: inline-block; padding: 3px 8px; background: #f5f5f5; color: #666; font-size: 11px; border-radius: 3px; text-decoration: none; }
+
+    /* ===== COMMENT SECTION ===== */
+    .comment-section { background: white; padding: 20px; border-radius: 4px; margin-top: 20px; }
+    .comment-form textarea { width: 780px; height: 100px; padding: 8px; font-size: 13px; border: 1px solid #ddd; resize: vertical; }
+    .comment-form .form-row { display: flex; gap: 10px; margin-top: 10px; }
+    .comment-form input[type="text"] { width: 250px; padding: 4px 8px; font-size: 12px; border: 1px solid #ddd; }
+    .comment-form input[type="email"] { width: 250px; padding: 4px 8px; font-size: 12px; border: 1px solid #ddd; }
+    .comment-form button { padding: 6px 20px; background: #e94560; color: white; border: none; font-size: 12px; cursor: pointer; border-radius: 3px; }
+
+    .comment-item { display: flex; gap: 12px; padding: 15px 0; border-bottom: 1px solid #eee; }
+    .comment-item .avatar { width: 40px; height: 40px; border-radius: 50%; background: #e94560; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+    .comment-item .content { font-size: 13px; line-height: 1.6; color: #555; }
+    .comment-item .content .author { font-weight: 700; color: #333; font-size: 13px; }
+    .comment-item .content .time { font-size: 11px; color: #999; margin-left: 10px; }
+    .comment-item .actions a { font-size: 11px; color: #999; margin-right: 15px; text-decoration: none; }
+
+    /* ===== DATA TABLE ===== */
+    .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    .data-table th { background: #16213e; color: white; padding: 8px 12px; font-size: 12px; text-align: left; white-space: nowrap; }
+    .data-table td { padding: 8px 12px; font-size: 12px; border-bottom: 1px solid #eee; white-space: nowrap; }
+    .data-table tr:hover { background: #f8f8f8; }
+    .data-table .positive { color: #28a745; }
+    .data-table .negative { color: #dc3545; }
+
+    /* ===== FOOTER ===== */
+    .footer { background: #1a1a2e; color: #888; padding: 40px 0 20px; margin-top: 40px; }
+    .footer-inner { width: 1180px; margin: 0 auto; display: flex; gap: 40px; }
+    .footer-col { width: 270px; }
+    .footer-col h5 { color: white; font-size: 14px; margin-bottom: 12px; }
+    .footer-col a { display: block; color: #888; text-decoration: none; font-size: 12px; padding: 3px 0; }
+    .footer-col p { font-size: 11px; line-height: 1.8; }
+    .footer-bottom { text-align: center; padding-top: 20px; margin-top: 20px; border-top: 1px solid #333; font-size: 11px; }
+    .footer-bottom a { color: #888; margin: 0 5px; text-decoration: none; }
+
+    /* ===== FLOATING ELEMENTS ===== */
+    .back-to-top { position: fixed; bottom: 20px; right: 20px; width: 36px; height: 36px; background: #e94560; color: white; border: none; border-radius: 50%; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+    .floating-ad { position: fixed; bottom: 80px; right: 20px; width: 120px; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.15); padding: 8px; border-radius: 4px; }
+    .floating-ad img { width: 120px; }
+    .floating-ad .close-btn { position: absolute; top: -8px; right: -8px; width: 18px; height: 18px; background: #333; color: white; border: none; border-radius: 50%; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+    /* ===== ANIMATIONS (no reduced-motion) ===== */
+    .news-card { transition: transform 0.3s, box-shadow 0.3s; }
+    .news-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.15); }
+    .hero-banner img { animation: slowZoom 20s ease-in-out infinite alternate; }
+    @keyframes slowZoom { from { transform: scale(1); } to { transform: scale(1.1); } }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div style="width:1180px;margin:0 auto;">
+      <a href="#">登录</a> | <a href="#">注册</a> | <a href="#">收藏本站</a> | <a href="#">设为首页</a> | <a href="#">RSS订阅</a>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">Tech<span>Pulse</span></div>
+      <div class="search-box">
+        <input type="text" placeholder="搜索科技资讯...">
+        <button>搜索</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN NAV -->
+  <nav class="main-nav">
+    <ul>
+      <li><a href="#">首页</a></li>
+      <li class="has-dropdown">
+        <a href="#">人工智能</a>
+        <div class="dropdown">
+          <a href="#">机器学习</a>
+          <a href="#">自然语言处理</a>
+          <a href="#">计算机视觉</a>
+          <a href="#">AI 伦理</a>
+        </div>
+      </li>
+      <li class="has-dropdown">
+        <a href="#">智能硬件</a>
+        <div class="dropdown">
+          <a href="#">手机</a>
+          <a href="#">可穿戴设备</a>
+          <a href="#">智能家居</a>
+        </div>
+      </li>
+      <li><a href="#">区块链</a></li>
+      <li><a href="#">云计算</a></li>
+      <li><a href="#">网络安全</a></li>
+      <li><a href="#">创业投资</a></li>
+      <li><a href="#">深度报道</a></li>
+      <li><a href="#">视频</a></li>
+      <li><a href="#">专栏</a></li>
+    </ul>
+  </nav>
+
+  <!-- CONTENT AREA -->
+  <div class="content-wrap">
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+
+      <!-- HERO BANNER -->
+      <div class="hero-banner">
+        <img src="https://picsum.photos/820/420?random=1" alt="Featured Article">
+        <div class="overlay">
+          <h2>OpenAI 发布 GPT-5：多模态推理能力实现重大突破</h2>
+          <p>2025年最受关注的 AI 模型升级，GPT-5 在复杂推理、代码生成和多模态理解方面表现惊人…</p>
+        </div>
+      </div>
+
+      <!-- NEWS GRID -->
+      <h2 class="section-title">热门资讯</h2>
+      <div class="news-grid">
+        <div class="news-card">
+          <img src="https://picsum.photos/260/160?random=2" alt="News">
+          <div class="card-body">
+            <h3><a href="#">苹果 Vision Pro 2 曝光：更轻、更便宜、算力翻倍</a></h3>
+            <div class="meta"><span class="tag">硬件</span> 3小时前 · 阅读 2.4万</div>
+          </div>
+        </div>
+        <div class="news-card">
+          <img src="https://picsum.photos/260/160?random=3" alt="News">
+          <div class="card-body">
+            <h3><a href="#">特斯拉 FSD V13 正式推送：完全自动驾驶不再是梦</a></h3>
+            <div class="meta"><span class="tag">汽车</span> 5小时前 · 阅读 1.8万</div>
+          </div>
+        </div>
+        <div class="news-card">
+          <img src="https://picsum.photos/260/160?random=4" alt="News">
+          <div class="card-body">
+            <h3><a href="#">量子计算新里程碑：Google 实现 1000+ 逻辑量子比特</a></h3>
+            <div class="meta"><span class="tag">前沿</span> 8小时前 · 阅读 3.1万</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ARTICLE LIST -->
+      <h2 class="section-title">深度阅读</h2>
+      <div class="article-list">
+        <div class="article-item">
+          <img src="https://picsum.photos/200/130?random=5" alt="Article">
+          <div class="info">
+            <h3><a href="#">从 ChatGPT 到 Agent：AI 应用范式的三次跃迁</a></h3>
+            <p>回顾过去两年 AI 应用的发展路径，从简单的对话机器人到复杂的多智能体系统，我们正在见证一场前所未有的技术革命。本文深入分析了每次范式跃迁的技术驱动力…</p>
+            <div class="meta">张明远 · 深度报道 · 2025-01-15 · 阅读 5.6万</div>
+          </div>
+        </div>
+        <div class="article-item">
+          <img src="https://picsum.photos/200/130?random=6" alt="Article">
+          <div class="info">
+            <h3><a href="#">全球芯片战争 2025：谁在赢？</a></h3>
+            <p>随着各国加大半导体投资力度，全球芯片产业格局正在发生深刻变化。台积电、三星、英特尔三巨头的竞争进入白热化阶段，中国大陆厂商也在逐步缩小差距…</p>
+            <div class="meta">李思远 · 产业分析 · 2025-01-14 · 阅读 4.2万</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DATA TABLE -->
+      <h2 class="section-title">科技股行情</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>代码</th>
+            <th>公司名称</th>
+            <th>最新价 (USD)</th>
+            <th>涨跌幅</th>
+            <th>市值 (亿)</th>
+            <th>52周最高</th>
+            <th>52周最低</th>
+            <th>PE (TTM)</th>
+            <th>成交量</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>AAPL</td><td>Apple Inc.</td><td>198.50</td><td class="positive">+1.25%</td><td>30,840</td><td>205.80</td><td>152.30</td><td>31.2</td><td>52,340,000</td></tr>
+          <tr><td>NVDA</td><td>NVIDIA Corp.</td><td>875.20</td><td class="positive">+3.45%</td><td>21,560</td><td>920.00</td><td>385.60</td><td>68.5</td><td>45,120,000</td></tr>
+          <tr><td>MSFT</td><td>Microsoft Corp.</td><td>425.80</td><td class="negative">-0.32%</td><td>31,650</td><td>445.20</td><td>362.10</td><td>36.8</td><td>22,450,000</td></tr>
+          <tr><td>GOOGL</td><td>Alphabet Inc.</td><td>175.60</td><td class="positive">+0.85%</td><td>21,890</td><td>182.40</td><td>128.90</td><td>25.4</td><td>28,670,000</td></tr>
+          <tr><td>META</td><td>Meta Platforms</td><td>545.30</td><td class="negative">-1.12%</td><td>13,850</td><td>568.00</td><td>388.20</td><td>28.6</td><td>18,930,000</td></tr>
+          <tr><td>TSLA</td><td>Tesla Inc.</td><td>248.90</td><td class="positive">+2.88%</td><td>7,920</td><td>278.50</td><td>152.40</td><td>72.3</td><td>98,450,000</td></tr>
+        </tbody>
+      </table>
+
+      <!-- COMMENT SECTION -->
+      <div class="comment-section">
+        <h2 class="section-title">热门评论</h2>
+        <div class="comment-form">
+          <textarea placeholder="分享你的看法..."></textarea>
+          <div class="form-row">
+            <input type="text" placeholder="昵称">
+            <input type="text" placeholder="邮箱地址">
+            <button>发表评论</button>
+          </div>
+        </div>
+        <div class="comment-item">
+          <div class="avatar">K</div>
+          <div class="content">
+            <div><span class="author">科技老王</span><span class="time">2小时前</span></div>
+            <p>GPT-5 的多模态能力确实惊艳，但我更关心的是它在实际工程场景中的表现。之前 GPT-4 在复杂代码重构上还是有不少问题的。</p>
+            <div class="actions">
+              <a href="#">👍 赞同 (42)</a>
+              <a href="#">💬 回复</a>
+              <a href="#">⚡ 举报</a>
+            </div>
+          </div>
+        </div>
+        <div class="comment-item">
+          <div class="avatar">A</div>
+          <div class="content">
+            <div><span class="author">AI研究员小陈</span><span class="time">5小时前</span></div>
+            <p>作为从业者说几句：GPT-5 的推理能力提升不是线性的，而是质变。我们内部测试在数学推理 benchmark 上提升了 40%+。</p>
+            <div class="actions">
+              <a href="#">👍 赞同 (128)</a>
+              <a href="#">💬 回复</a>
+              <a href="#">⚡ 举报</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="ad-banner">广告位 340×250</div>
+
+      <div class="sidebar-widget">
+        <h4>🔥 热门排行</h4>
+        <ol class="hot-list">
+          <li><a href="#">OpenAI GPT-5 发布会全程回顾</a></li>
+          <li><a href="#">苹果 M4 Ultra 芯片性能实测</a></li>
+          <li><a href="#">华为鸿蒙 5.0 开发者预览版发布</a></li>
+          <li><a href="#">马斯克 Neuralink 首批人体试验结果公布</a></li>
+          <li><a href="#">中国 6G 技术标准制定取得关键进展</a></li>
+          <li><a href="#">微软 Copilot 企业版使用量突破 1 亿</a></li>
+          <li><a href="#">全球首个通用量子计算机在日本启用</a></li>
+          <li><a href="#">字节跳动 AI 大模型最新进展曝光</a></li>
+          <li><a href="#">三星 Galaxy S26 Ultra 渲染图泄露</a></li>
+          <li><a href="#">英伟达 Blackwell B300 供不应求</a></li>
+        </ol>
+      </div>
+
+      <div class="sidebar-widget">
+        <h4>标签云</h4>
+        <div class="tag-cloud">
+          <a href="#">人工智能</a> <a href="#">GPT-5</a> <a href="#">量子计算</a>
+          <a href="#">芯片</a> <a href="#">特斯拉</a> <a href="#">苹果</a>
+          <a href="#">元宇宙</a> <a href="#">Web3</a> <a href="#">自动驾驶</a>
+          <a href="#">机器人</a> <a href="#">云原生</a> <a href="#">网络安全</a>
+          <a href="#">大模型</a> <a href="#">开源</a> <a href="#">AGI</a>
+        </div>
+      </div>
+
+      <div class="sidebar-widget">
+        <h4>📧 订阅日报</h4>
+        <p style="font-size:12px;color:#666;margin-bottom:10px;">每日精选科技资讯，直达邮箱</p>
+        <input type="text" placeholder="输入邮箱地址" style="width:100%;padding:4px 8px;font-size:12px;border:1px solid #ddd;margin-bottom:8px;">
+        <button style="width:100%;padding:6px;background:#e94560;color:white;border:none;font-size:12px;cursor:pointer;border-radius:3px;">免费订阅</button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-col">
+        <h5>关于我们</h5>
+        <p>TechPulse 是领先的中文科技资讯平台，致力于为读者提供最前沿、最深度的科技报道与分析。我们的团队由资深科技记者、行业分析师和技术专家组成。</p>
+      </div>
+      <div class="footer-col">
+        <h5>快速链接</h5>
+        <a href="#">关于我们</a> <a href="#">联系方式</a> <a href="#">广告合作</a>
+        <a href="#">加入我们</a> <a href="#">用户协议</a> <a href="#">隐私政策</a>
+      </div>
+      <div class="footer-col">
+        <h5>友情链接</h5>
+        <a href="#">36氪</a> <a href="#">虎嗅</a> <a href="#">极客公园</a>
+        <a href="#">少数派</a> <a href="#">InfoQ</a> <a href="#">CSDN</a>
+      </div>
+      <div class="footer-col">
+        <h5>联系我们</h5>
+        <p>邮箱：contact@techpulse.cn<br>电话：400-888-9999<br>地址：北京市海淀区中关村大街1号<br>微信公众号：TechPulse科技脉搏</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 TechPulse. All rights reserved. <a href="#">京ICP备12345678号</a> | <a href="#">京公网安备11010802012345号</a></p>
+    </div>
+  </footer>
+
+  <!-- FLOATING ELEMENTS -->
+  <button class="back-to-top" aria-label="回到顶部">↑</button>
+  <div class="floating-ad">
+    <button class="close-btn" aria-label="关闭广告">×</button>
+    <img src="https://picsum.photos/120/150?random=99" alt="Ad">
+    <p style="font-size:10px;color:#999;margin-top:4px;text-align:center;">推广</p>
+  </div>
+
+</body>
+</html>
